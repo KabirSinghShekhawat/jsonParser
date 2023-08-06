@@ -6,40 +6,75 @@ import (
 	"strings"
 )
 
+type TokenType string
+
+const (
+	ObjectStart   TokenType = "OBJECT_START"
+	ObjectEnd     TokenType = "OBJECT_END"
+	DoubleQuote   TokenType = "DOUBLE_QUOTE"
+	ArrayBegin    TokenType = "ARRAY_BEGIN"
+	ArrayEnd      TokenType = "ARRAY_END"
+	KvSeparator   TokenType = "KV_SEPARATOR"
+	ItemSeparator TokenType = "ITEM_SEPARATOR"
+	Boolean       TokenType = "BOOLEAN"
+	Number        TokenType = "NUMBER"
+	String        TokenType = "STRING"
+)
+
 type Token struct {
-	Name  string
-	Value string // rune or string?
-	Count int
+	Type  TokenType
+	Value string
 }
 
-type Lexer[T any] struct {
-	tokens []T
+type Lexer struct {
+	tokens []Token
 }
 
 func main() {
-	leftBracket := Token{
-		Name:  "leftBracket",
-		Value: "{",
-		Count: 0,
+	jsonReader := strings.NewReader("{ \"name\": }  \"Kabir Singh\"}}")
+	readBuffer := make([]byte, 1)
+	luthor := Lexer{
+		tokens: make([]Token, jsonReader.Len()),
 	}
 
-	lexLuthor := Lexer[Token]{
-		tokens: make([]Token, 2),
-	}
+	var token strings.Builder
 
-	jsonStr := strings.NewReader("{\"name\": \"Kabir\"}")
-	token := make([]byte, 1)
+	quoteOpen := false
 	for {
-		_, err := jsonStr.Read(token)
+		_, err := jsonReader.Read(readBuffer)
 		if err == io.EOF {
 			break
 		}
-		fmt.Printf("token = %s\n", string(token))
-		switch string(token) {
-		case leftBracket.Value:
-			leftBracket.Count += 1
-			lexLuthor.tokens = append(lexLuthor.tokens, leftBracket)
+
+		token.WriteString(string(readBuffer))
+
+		tokenStr := token.String()
+		if tokenStr == "{" {
+			luthor.tokens = append(luthor.tokens, Token{Type: ObjectStart, Value: token.String()})
+			token.Reset()
+		} else if tokenStr == "}" {
+			luthor.tokens = append(luthor.tokens, Token{Type: ObjectEnd, Value: token.String()})
+			token.Reset()
+		} else if string(readBuffer) == "\"" {
+			quoteOpen = true
+			if strings.Contains(tokenStr[1:], "\"") {
+				luthor.tokens = append(luthor.tokens, Token{Type: DoubleQuote, Value: token.String()})
+				quoteOpen = false
+				token.Reset()
+			} else {
+				continue
+			}
+		} else if tokenStr == ":" {
+			luthor.tokens = append(luthor.tokens, Token{Type: KvSeparator, Value: token.String()})
+			token.Reset()
+		} else if string(readBuffer) == " " && !quoteOpen {
+			token.Reset()
 		}
 	}
-	fmt.Printf("\ntokens = %v\n", lexLuthor.tokens)
+
+	for _, token := range luthor.tokens {
+		if len(token.Value) != 0 {
+			fmt.Println(token)
+		}
+	}
 }
