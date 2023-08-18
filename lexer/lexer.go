@@ -1,6 +1,6 @@
 package lexer
 
-import "cc/jsonParser/token"
+import "jsonParser/token"
 
 type Lexer struct {
 	input        string

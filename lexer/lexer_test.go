@@ -1,7 +1,7 @@
 package lexer
 
 import (
-	"cc/jsonParser/token"
+	"jsonParser/token"
 	"testing"
 )
 
