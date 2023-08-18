@@ -31,7 +31,7 @@ type Lexer struct {
 }
 
 func main() {
-	jsonReader := strings.NewReader("{ \"name\": }  \"Kabir Singh\"}}")
+	jsonReader := strings.NewReader("{\"name\": \"Kabir Singh\"}")
 	readBuffer := make([]byte, 1)
 	luthor := Lexer{
 		tokens: make([]Token, jsonReader.Len()),
@@ -57,8 +57,13 @@ func main() {
 			token.Reset()
 		} else if string(readBuffer) == "\"" {
 			quoteOpen = true
-			if strings.Contains(tokenStr[1:], "\"") {
-				luthor.tokens = append(luthor.tokens, Token{Type: DoubleQuote, Value: token.String()})
+			// HasSuffix is used just for semantic reasons, replacing it with 'Contains' will maken no differnce.
+			// Since the token is built char by char, the second double quote will always be a suffix.
+			if strings.HasSuffix(tokenStr[1:], "\"") {
+				strVal := strings.Split(tokenStr, "\"")[1]
+				luthor.tokens = append(luthor.tokens, Token{Type: DoubleQuote, Value: "\""})
+				luthor.tokens = append(luthor.tokens, Token{Type: String, Value: strVal})
+				luthor.tokens = append(luthor.tokens, Token{Type: DoubleQuote, Value: "\""})
 				quoteOpen = false
 				token.Reset()
 			} else {
