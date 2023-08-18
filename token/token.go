@@ -1,9 +1,11 @@
 package token
 
 const (
-	KEY    = "KEY"
-	STRING = "STRING"
-	INT    = "INT"
+	ILLEGAL = "ILLEGAL"
+	EOF     = "EOF"
+	KEY     = "KEY"
+	STRING  = "STRING"
+	INT     = "INT"
 
 	COLON       = ":"
 	LBRACE      = "{"

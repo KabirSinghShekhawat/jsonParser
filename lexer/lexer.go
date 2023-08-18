@@ -22,24 +22,22 @@ func (l *Lexer) NextToken() token.Token {
 	case '}':
 		tok = newToken(token.RBRACE, l.ch)
 	case '"':
-		str := l.readString()
-		tok = token.Token{
-			Type:    token.STRING,
-			Literal: str,
-		}
+		tok.Literal = l.readString()
+		tok.Type = token.STRING
 		return tok
 	case ':':
 		tok = newToken(token.COLON, l.ch)
 	case ',':
 		tok = newToken(token.COMMA, l.ch)
+	case 0:
+		tok = newToken(token.EOF, l.ch)
 	default:
 		if isDigit(l.ch) {
-			num := l.readNum()
-			tok = token.Token{
-				Type:    token.INT,
-				Literal: num,
-			}
+			tok.Literal = l.readNum()
+			tok.Type = token.INT
 			return tok
+		} else {
+			tok = newToken(token.ILLEGAL, l.ch)
 		}
 	}
 
