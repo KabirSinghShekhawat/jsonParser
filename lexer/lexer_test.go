@@ -17,7 +17,7 @@ func TestNextToken(t *testing.T) {
 		{token.COLON, ":"},
 		{token.STRING, `"kabir"`},
 		{token.COMMA, ","},
-		{token.KEY, `"age"`},
+		{token.STRING, `"age"`},
 		{token.COLON, ":"},
 		{token.INT, "10"},
 		{token.RBRACE, "}"},

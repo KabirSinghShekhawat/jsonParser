@@ -1,6 +1,8 @@
 package lexer
 
-import "jsonParser/token"
+import (
+	"jsonParser/token"
+)
 
 type Lexer struct {
 	input        string
@@ -17,6 +19,8 @@ func (l *Lexer) NextToken() token.Token {
 	switch l.ch {
 	case '{':
 		tok = newToken(token.LBRACE, l.ch)
+	case '}':
+		tok = newToken(token.RBRACE, l.ch)
 	case '"':
 		str := l.readString()
 		tok = token.Token{
@@ -24,6 +28,19 @@ func (l *Lexer) NextToken() token.Token {
 			Literal: str,
 		}
 		return tok
+	case ':':
+		tok = newToken(token.COLON, l.ch)
+	case ',':
+		tok = newToken(token.COMMA, l.ch)
+	default:
+		if isDigit(l.ch) {
+			num := l.readNum()
+			tok = token.Token{
+				Type:    token.INT,
+				Literal: num,
+			}
+			return tok
+		}
 	}
 
 	l.readChar()
@@ -50,6 +67,14 @@ func (l *Lexer) readString() string {
 	return l.input[position:l.position]
 }
 
+func (l *Lexer) readNum() string {
+	position := l.position
+	for isDigit(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
@@ -67,10 +92,6 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 		Type:    tokenType,
 		Literal: string(ch),
 	}
-}
-
-func isLetter(ch byte) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z'
 }
 
 func isDigit(ch byte) bool {

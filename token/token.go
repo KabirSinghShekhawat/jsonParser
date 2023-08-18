@@ -5,12 +5,9 @@ const (
 	STRING = "STRING"
 	INT    = "INT"
 
-	DOUBLE_QUOTE = `"`
-	COLON        = ":"
-
-	LBRACE = "{"
-	RBRACE = "}"
-
+	COLON       = ":"
+	LBRACE      = "{"
+	RBRACE      = "}"
 	ARRAY_OPEN  = "["
 	ARRAY_CLOSE = "]"
 
