@@ -6,7 +6,7 @@ import (
 )
 
 func TestNextToken(t *testing.T) {
-	input := `{"name": "kabir", "age": 10}`
+	input := `{"name": "kabir", "age": 10, "isActive": true, "friends": ["john", "doe"]}`
 
 	tests := []struct {
 		expectedType    token.TokenType
@@ -20,6 +20,18 @@ func TestNextToken(t *testing.T) {
 		{token.STRING, `"age"`},
 		{token.COLON, ":"},
 		{token.INT, "10"},
+		{token.COMMA, ","},
+		{token.STRING, `"isActive"`},
+		{token.COLON, ":"},
+		{token.TRUE, "true"},
+		{token.COMMA, ","},
+		{token.STRING, `"friends"`},
+		{token.COLON, ":"},
+		{token.ARRAY_OPEN, "["},
+		{token.STRING, `"john"`},
+		{token.COMMA, ","},
+		{token.STRING, `"doe"`},
+		{token.ARRAY_CLOSE, "]"},
 		{token.RBRACE, "}"},
 	}
 

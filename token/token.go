@@ -34,5 +34,5 @@ func LookupKey(key string) TokenType {
 	if tok, ok := keywords[key]; ok {
 		return tok
 	}
-	return KEY
+	return STRING
 }

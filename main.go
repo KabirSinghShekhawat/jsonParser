@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	input := `{"name": "kabir", "age": 10}`
+	input := `{"name": "kabir", "age": 10, "isActive": true, "friends": ["john", "doe"]}`
 	l := lexer.New(input)
 	IllegalToken := token.Token{Type: token.ILLEGAL}
 	EOFToken := token.Token{Type: token.EOF}
